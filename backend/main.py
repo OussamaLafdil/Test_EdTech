@@ -12,7 +12,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Allow CORS so the React app (usually on port 5173 or 3000) can talk to FastAPI (port 8000)
+# Allow CORS so the React app
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -76,7 +76,7 @@ async def simulate_batch(data: List[Dict[str, Any]]):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Invalid data format: {str(e)}")
 
-    # 2. Create a temporary CSV file because 'generate_dashboard_data' expects a file path
+    # 2. Create a temporary CSV file because
     # We use delete=False to close the file so pandas can read it, then we remove it manually.
     with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv', encoding='utf-8') as tmp:
         df_input.to_csv(tmp.name, index=False)
@@ -86,7 +86,6 @@ async def simulate_batch(data: List[Dict[str, Any]]):
         # 3. Run the processing function from funcs.py
         df_results = generate_dashboard_data(tmp_path, MODEL_PATH, FEATS_PATH)
         
-        # 4. Rename columns to match what App.jsx expects
         # funcs.py outputs: ['FinalGrade', 'Potential_Grade', 'Complexity_Score', ...]
         # App.jsx expects:  ['ActualGrade', 'PotentialGrade', 'ComplexityScore']
         df_results = df_results.rename(columns={
